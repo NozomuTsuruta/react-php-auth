@@ -29,7 +29,6 @@ export const AuthForm: React.FC<Props> = ({ title, inputList, linkList }) => {
             fullWidth
             label={name}
             name={name}
-            autoFocus
           />
         ))}
         <Button type="submit" fullWidth variant="contained" color="primary">

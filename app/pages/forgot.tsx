@@ -6,5 +6,5 @@ export default function Forgot() {
 
   const linkList = [{ text: 'Sign in', url: 'signin' }];
 
-  return <AuthForm title="signup" inputList={inputList} linkList={linkList} />;
+  return <AuthForm title="forgot" inputList={inputList} linkList={linkList} />;
 }
