@@ -37,3 +37,35 @@ export const pc = (
     ${css(first, ...interpolations)}
   }
 `;
+
+/** Validation */
+
+export const validation = {
+  email: {
+    required: '必須項目です',
+    pattern: {
+      value: /^[A-Za-z0-9]{1}[A-Za-z0-9_.-]*@{1}[A-Za-z0-9_.-]{1,}\.[A-Za-z0-9]{1,}$/,
+      message: 'メールアドレスの形式が不正です',
+    },
+  },
+  normal: {
+    pattern: {
+      value: /[^ |　]/,
+      message: 'スペースのみの入力はできません。',
+    },
+  },
+  required: {
+    required: '必須項目です',
+    pattern: {
+      value: /[^ |　]/,
+      message: 'スペースのみの入力はできません。',
+    },
+  },
+  password: {
+    required: '必須項目です。',
+    minLength: {
+      value: 8,
+      message: '８文字以上入力してください。',
+    },
+  },
+};
