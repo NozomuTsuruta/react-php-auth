@@ -16,29 +16,19 @@ class JwtHandler
 
     public function __construct()
     {
-        // set your default time-zone
         date_default_timezone_set('Asia/Kolkata');
         $this->issued_at = time();
-
-        // Token Validity (3600 second = 1hr)
         $this->expire = $this->issued_at + 3600;
-
-        // Set your secret or signature
         $this->jwt_secret = 'this_is_my_secret';
     }
 
-    // ENCODING THE TOKEN
     public function _jwt_encode_data($iss, $data)
     {
         $this->token = [
-            //Adding the identifier to the token (who issue the token)
             'iss' => $iss,
             'aud' => $iss,
-            // Adding the current timestamp to the token, for identifying that when the token was issued.
             'iat' => $this->issued_at,
-            // Token expiration
             'exp' => $this->expire,
-            // Payload
             'data' => $data,
         ];
         
@@ -54,7 +44,6 @@ class JwtHandler
         ];
     }
 
-    //DECODING THE TOKEN
     public function _jwt_decode_data($jwt_token)
     {
         try {

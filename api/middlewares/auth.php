@@ -13,7 +13,7 @@ class Auth extends JwtHandler
         $this->headers = $headers;
     }
 
-    public function isAuth()
+    public function is_auth()
     {
 
         if (array_key_exists('Authorization', $this->headers) && !empty(trim(
@@ -21,30 +21,24 @@ class Auth extends JwtHandler
             $this->token = explode(' ', trim($this->headers['Authorization']));
 
             if (isset($this->token[1]) && !empty(trim($this->token[1]))) {
-
                 $data = $this->_jwt_decode_data($this->token[1]);
 
                 if (isset($data['auth']) && isset($data['data']->user_id) &&
                     $data['auth']) {
-                    $user = $this->fetchUser($data['data']->user_id);
+                    $user = $this->fetch_user($data['data']->user_id);
                     return $user;
-
                 } else {
                     return null;
                 }
-
             } else {
                 return null;
-
             }
-
         } else {
             return null;
         }
-
     }
 
-    protected function fetchUser($user_id)
+    protected function fetch_user($user_id)
     {
         try {
             $query_stmt = $this->db->prepare(
@@ -62,7 +56,6 @@ class Auth extends JwtHandler
             } else {
                 return null;
             }
-
         } catch (PDOException $e) {
             return null;
         }

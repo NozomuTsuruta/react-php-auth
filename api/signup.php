@@ -17,20 +17,15 @@ function msg($success, $status, $message, $extra = [])
     ], $extra);
 }
 
-// INCLUDING DATABASE AND MAKING OBJECT
 require __DIR__ . '/classes/Database.php';
 $db_connection = new Database();
 $conn = $db_connection->db_connection();
 
-// GET DATA FORM REQUEST
 $data = json_decode(file_get_contents('php://input'));
-$returnData = [];
+$return_data = [];
 
-// IF REQUEST METHOD IS NOT POST
 if ($_SERVER['REQUEST_METHOD'] != 'POST') {
-    $returnData = msg(0, 404, 'Page Not Found!');
-
-// CHECKING EMPTY FIELDS
+    $return_data = msg(0, 404, 'Page Not Found!');
 } elseif (!isset($data->name)
     || !isset($data->email)
     || !isset($data->password)
@@ -38,20 +33,17 @@ if ($_SERVER['REQUEST_METHOD'] != 'POST') {
     || empty(trim($data->email))
     || empty(trim($data->password))
 ) {
-
     $fields = ['fields' => ['name', 'email', 'password']];
-    $returnData = msg(0, 422, 'Please Fill in all Required Fields!', $fields);
-
-// IF THERE ARE NO EMPTY FIELDS THEN-
+    $return_data = msg(0, 422, 'Please Fill in all Required Fields!', $fields);
 } else {
     $name = trim($data->name);
     $email = trim($data->email);
     $password = trim($data->password);
 
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $returnData = msg(0, 422, 'Invalid Email Address!');
+        $return_data = msg(0, 422, 'Invalid Email Address!');
     } elseif (strlen($password) < 8) {
-        $returnData = msg(0, 422,
+        $return_data = msg(0, 422,
             'Your password must be at least 8 characters long!');
     } else {
         try {
@@ -61,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] != 'POST') {
             $check_email_stmt->execute();
 
             if ($check_email_stmt->rowCount()) {
-                $returnData = msg(0, 422, 'This E-mail already in use!');
+                $return_data = msg(0, 422, 'This E-mail already in use!');
             } else {
                 $insert_stmt = $conn->prepare(
                     'INSERT INTO users SET name=?,email=?,password=?');
@@ -72,12 +64,10 @@ if ($_SERVER['REQUEST_METHOD'] != 'POST') {
                 $insert_stmt->bindValue(3, password_hash($password,
                     PASSWORD_DEFAULT), PDO::PARAM_STR);
                 $insert_stmt->execute();
-
-                $returnData = msg(1, 201, 'You have successfully registered.');
+                $return_data = msg(1, 201, 'You have successfully registered.');
             }
-
         } catch (PDOException $e) {
-            $returnData = msg(0, 500, $e->getMessage());
+            $return_data = msg(0, 500, $e->getMessage());
         }
 
     }

@@ -9,6 +9,7 @@ import {
 } from '@material-ui/core';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
+import axios from 'axios';
 
 type Props = {
   title: 'signin' | 'signup' | 'forgot';
@@ -33,7 +34,7 @@ export const AuthForm: React.FC<Props> = ({ title, inputList, linkList }) => {
     clearErrors,
   } = useForm<FormData>();
 
-  const onSubmit = (data: FormData) => {
+  const onSubmit = async (data: FormData) => {
     try {
       if (title === 'signup') {
         if (data.password !== data.passwordConfirm) {
@@ -44,9 +45,11 @@ export const AuthForm: React.FC<Props> = ({ title, inputList, linkList }) => {
           return;
         }
         clearErrors('passwordConfirm');
-        console.log(data);
+        const res = await axios.post('/signup.php', data);
+        console.log(res);
       } else if (title === 'signin') {
-        console.log(data);
+        const res = await axios.post('/signin.php', data);
+        console.log(res);
       } else {
         console.log(data);
       }
