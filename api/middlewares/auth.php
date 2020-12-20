@@ -1,5 +1,5 @@
 <?php
-require __DIR__ . '/../classes/JwtHandler.php';
+require __DIR__ . '/../classes/jwt_handler.php';
 class Auth extends JwtHandler
 {
 

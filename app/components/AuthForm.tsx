@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import {
   Button,
@@ -10,6 +10,7 @@ import {
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
+import { useRouter } from 'next/dist/client/router';
 
 type Props = {
   title: 'signin' | 'signup' | 'forgot';
@@ -33,6 +34,11 @@ export const AuthForm: React.FC<Props> = ({ title, inputList, linkList }) => {
     setError,
     clearErrors,
   } = useForm<FormData>();
+  const [response, setResponse] = useState<{
+    success: 0 | 1;
+    message: string;
+  }>({ success: 0, message: '' });
+  const router = useRouter();
 
   const onSubmit = async (data: FormData) => {
     try {
@@ -46,11 +52,25 @@ export const AuthForm: React.FC<Props> = ({ title, inputList, linkList }) => {
         }
         clearErrors('passwordConfirm');
         const res = await axios.post('/signup.php', data);
-        console.log(res);
+        if (res.data) {
+          setResponse({ success: res.data.success, message: res.data.message });
+        } else {
+          router.push('/signin');
+        }
       } else if (title === 'signin') {
         const res = await axios.post('/signin.php', data);
-        console.log(res.data);
-        console.log(data)
+        if (res.data.success === 1) {
+          localStorage.setItem('loginToken', res.data.token);
+          const loginToken = localStorage.getItem('loginToken');
+
+          if (loginToken) {
+            axios.defaults.headers.common['Authorization'] =
+              'bearer ' + loginToken;
+            const { data } = await axios.get('/index.php');
+            console.log(data);
+          }
+        }
+        setResponse({ success: res.data.success, message: res.data.message });
       } else {
         console.log(data);
       }
