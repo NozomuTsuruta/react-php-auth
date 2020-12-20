@@ -49,7 +49,8 @@ export const AuthForm: React.FC<Props> = ({ title, inputList, linkList }) => {
         console.log(res);
       } else if (title === 'signin') {
         const res = await axios.post('/signin.php', data);
-        console.log(res);
+        console.log(res.data);
+        console.log(data)
       } else {
         console.log(data);
       }

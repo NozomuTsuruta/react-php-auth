@@ -17,8 +17,8 @@ function msg($success, $status, $message, $extra = [])
     ], $extra);
 }
 
-require __DIR__ . '/classes/Database.php';
-require __DIR__ . '/classes/JwtHandler.php';
+require __DIR__ . '/classes/db_connect.php';
+require __DIR__ . '/classes/jwt_handler.php';
 
 $db_connection = new Database();
 $conn = $db_connection->db_connection();
@@ -28,9 +28,7 @@ $return_data = [];
 
 if ($_SERVER['REQUEST_METHOD'] != 'POST') {
     $return_data = msg(0, 404, 'Page Not Found!');
-
-} elseif (!isset($data->email) || !isset($data->password) || empty(trim($data->
-        email)) || empty(trim($data->password))) {
+} elseif (!isset($data->email) || !isset($data->password) || empty(trim($data->email)) || empty(trim($data->password))) {
     $fields = ['fields' => ['email', 'password']];
     $return_data = msg(0, 422, 'Please Fill in all Required Fields!', $fields);
 } else {
@@ -54,10 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] != 'POST') {
 
                 if ($check_password) {
                     $jwt = new JwtHandler();
-                    $token = $jwt->_jwt_encode_data(
-                        'http://localhost/',
-                        ['user_id' => $row['id']]
-                    );
+                    $token = $jwt->_jwt_encode_data('http://localhost/', ['user_id' => $row['id']]);
                     $return_data = [
                         'success' => 1,
                         'message' => 'You have successfully logged in.',
@@ -70,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] != 'POST') {
                 $return_data = msg(0, 422, 'Invalid Email Address!');
             }
         } catch (PDOException $e) {
-            $returnData = msg(0, 500, $e->getMessage());
+            $return_data = msg(0, 500, $e->getMessage());
         }
     }
 }

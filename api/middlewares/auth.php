@@ -15,7 +15,6 @@ class Auth extends JwtHandler
 
     public function is_auth()
     {
-
         if (array_key_exists('Authorization', $this->headers) && !empty(trim(
             $this->headers['Authorization']))) {
             $this->token = explode(' ', trim($this->headers['Authorization']));
@@ -23,8 +22,7 @@ class Auth extends JwtHandler
             if (isset($this->token[1]) && !empty(trim($this->token[1]))) {
                 $data = $this->_jwt_decode_data($this->token[1]);
 
-                if (isset($data['auth']) && isset($data['data']->user_id) &&
-                    $data['auth']) {
+                if (isset($data['auth']) && isset($data['data']->user_id) && $data['auth']) {
                     $user = $this->fetch_user($data['data']->user_id);
                     return $user;
                 } else {
